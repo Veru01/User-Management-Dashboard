@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD MySQL Project - Complete Guide & Interview Questions</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1a1a2e;
+            line-height: 1.7;
+            background: #f8f9fa;
+        }
+
+        @media print {
+            body { background: white; }
+            .page-break { page-break-before: always; }
+            .no-print { display: none; }
+            .cover { min-height: 100vh; }
+        }
+
+        /* Cover Page */
+        .cover {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .cover h1 { font-size: 3.5em; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; position: relative; z-index: 1; }
+        .cover h2 { font-size: 1.5em; font-weight: 300; color: #a5b4fc; margin-bottom: 30px; position: relative; z-index: 1; }
+        .cover .tech-stack {
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
+            position: relative; z-index: 1; margin-top: 20px;
+        }
+        .cover .tech-badge {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 20px; border-radius: 25px; font-size: 0.9em; backdrop-filter: blur(10px);
+        }
+        .cover .subtitle { margin-top: 40px; font-size: 1em; color: #94a3b8; position: relative; z-index: 1; }
+
+        /* Content */
+        .content { max-width: 900px; margin: 0 auto; padding: 40px 30px; }
+
+        /* Section Headers */
+        .section-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 25px 35px;
+            border-radius: 16px;
+            margin: 50px 0 30px 0;
+            position: relative;
+        }
+        .section-header h2 { font-size: 1.8em; font-weight: 700; }
+        .section-header .section-num {
+            position: absolute; top: -15px; right: 25px;
+            background: #1e1b4b; color: #a5b4fc;
+            width: 45px; height: 45px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2em;
+            border: 3px solid #6366f1;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin: 20px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            border-left: 4px solid #6366f1;
+        }
+        .card h3 {
+            color: #4338ca;
+            font-size: 1.2em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card p, .card li { color: #475569; font-size: 0.95em; }
+        .card ul { padding-left: 20px; }
+        .card li { margin: 6px 0; }
+
+        /* Code blocks */
+        .code-block {
+            background: #1e1b4b;
+            color: #e2e8f0;
+            padding: 20px 25px;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+        .code-block .comment { color: #64748b; }
+        .code-block .keyword { color: #c084fc; }
+        .code-block .string { color: #34d399; }
+        .code-block .function { color: #60a5fa; }
+        .code-block .variable { color: #fbbf24; }
+
+        /* Flow diagram */
+        .flow-container { margin: 25px 0; }
+        .flow-step {
+            display: flex; align-items: stretch; margin: 0;
+        }
+        .flow-line {
+            width: 60px; display: flex; flex-direction: column; align-items: center;
+        }
+        .flow-dot {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 0.75em; flex-shrink: 0;
+        }
+        .flow-connector { width: 3px; flex-grow: 1; background: #c7d2fe; }
+        .flow-content {
+            flex: 1; background: white; border-radius: 12px;
+            padding: 18px 24px; margin: 8px 0; margin-left: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .flow-content h4 { color: #4338ca; margin-bottom: 6px; font-size: 1em; }
+        .flow-content p { color: #64748b; font-size: 0.9em; margin: 0; }
+        .flow-content code {
+            background: #eef2ff; color: #4338ca;
+            padding: 2px 8px; border-radius: 4px; font-size: 0.85em;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        th {
+            background: linear-gradient(135deg, #4338ca, #6366f1);
+            color: white; padding: 12px 16px; text-align: left;
+        }
+        td { padding: 10px 16px; border-bottom: 1px solid #e5e7eb; }
+        tr:nth-child(even) { background: #f8fafc; }
+        th:first-child { border-radius: 8px 0 0 0; }
+        th:last-child { border-radius: 0 8px 0 0; }
+
+        /* Interview Questions */
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            margin: 18px 0;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .question-header {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .q-num {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            min-width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.85em;
+        }
+        .q-text { font-weight: 600; color: #1e1b4b; font-size: 1em; flex: 1; }
+        .q-difficulty {
+            padding: 3px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 600;
+        }
+        .q-easy { background: #dcfce7; color: #166534; }
+        .q-medium { background: #fef3c7; color: #92400e; }
+        .q-hard { background: #fce7f3; color: #9d174d; }
+        .answer {
+            padding: 0 24px 20px 24px;
+            color: #475569;
+            font-size: 0.92em;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 16px;
+            margin: 0 15px;
+        }
+        .answer strong { color: #1e1b4b; }
+
+        /* Architecture diagram */
+        .arch-diagram {
+            background: #1e1b4b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82em;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .badge-blue { background: #dbeafe; color: #1d4ed8; }
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-purple { background: #ede9fe; color: #6d28d9; }
+        .badge-orange { background: #ffedd5; color: #c2410c; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* Highlight box */
+        .highlight-box {
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin: 20px 0;
+        }
+        .highlight-box h4 { color: #4338ca; margin-bottom: 8px; }
+
+        /* Print button */
+        .print-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white; border: none; padding: 15px 30px;
+            border-radius: 50px; font-size: 1em; font-weight: 600;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+            z-index: 100; transition: transform 0.2s;
+        }
+        .print-btn:hover { transform: scale(1.05); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+        .toc a { color: #4338ca; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .toc li { margin: 8px 0; font-size: 1em; }
+    </style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">&#128196; Save as PDF</button>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover">
+    <h1>CRUD MySQL Project</h1>
+    <h2>Complete Flow Guide & Interview Questions</h2>
+    <div class="tech-stack">
+        <span class="tech-badge">React.js</span>
+        <span class="tech-badge">Node.js</span>
+        <span class="tech-badge">Express.js</span>
+        <span class="tech-badge">MySQL</span>
+        <span class="tech-badge">Sequelize ORM</span>
+        <span class="tech-badge">Chart.js</span>
+        <span class="tech-badge">Bootstrap 5</span>
+    </div>
+    <p class="subtitle">Full-Stack MERN-Style Application with Authentication, Analytics & CSV Export</p>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="content">
+
+    <div class="card" style="border-left-color: #8b5cf6;">
+        <h3>&#128218; Table of Contents</h3>
+        <ol class="toc" style="padding-left: 20px;">
+            <li><a href="#s1">Project Overview & Architecture</a></li>
+            <li><a href="#s2">Project Structure</a></li>
+            <li><a href="#s3">Database Schema</a></li>
+            <li><a href="#s4">Complete Application Flow (Frontend → Backend)</a></li>
+            <li><a href="#s5">API Endpoints Reference</a></li>
+            <li><a href="#s6">Authentication Flow</a></li>
+            <li><a href="#s7">Key Code Walkthrough</a></li>
+            <li><a href="#s8">Interview Questions - Basic Level (15 Questions)</a></li>
+            <li><a href="#s9">Interview Questions - Intermediate Level (15 Questions)</a></li>
+            <li><a href="#s10">Interview Questions - Advanced Level (10 Questions)</a></li>
+        </ol>
+    </div>
+
+    <!-- ==================== SECTION 1 ==================== -->
+    <div id="s1" class="section-header">
+        <h2>Project Overview & Architecture</h2>
+        <div class="section-num">1</div>
+    </div>
+
+    <div class="card">
+        <h3>&#127919; What This Project Does</h3>
+        <p>A full-stack CRUD application that allows users to <strong>Create, Read, Update, and Delete</strong> user records stored in a MySQL database. It features a modern React frontend with authentication, data visualization (charts), CSV export, advanced filtering/sorting, and a RESTful Express.js backend.</p>
+    </div>
+
+    <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────────────┐
+│                        ARCHITECTURE DIAGRAM                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌──────────────────────┐         ┌──────────────────────────────┐  │
+│  │   FRONTEND (Client)  │         │     BACKEND (Server)         │  │
+│  │   Port: 3000         │         │     Port: 8001               │  │
+│  │                      │  HTTP   │                              │  │
+│  │  React.js            │ ──────► │  Express.js                  │  │
+│  │  React Router        │ ◄────── │  Sequelize ORM               │  │
+│  │  Context API         │  JSON   │  Bcrypt.js                   │  │
+│  │  Chart.js            │         │  CORS                        │  │
+│  │  Bootstrap 5         │         │                              │  │
+│  │  Axios               │         │  ┌────────────────────────┐  │  │
+│  └──────────────────────┘         │  │     MySQL Database     │  │  │
+│                                   │  │     Database: test1    │  │  │
+│  Proxy: localhost:8001            │  │                        │  │  │
+│                                   │  │  Tables:               │  │  │
+│                                   │  │  ├── users (CRUD data) │  │  │
+│                                   │  │  └── signup (Auth)     │  │  │
+│                                   │  └────────────────────────┘  │  │
+│                                   └──────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘</div>
+
+    <!-- ==================== SECTION 2 ==================== -->
+    <div id="s2" class="section-header page-break">
+        <h2>Project Structure</h2>
+        <div class="section-num">2</div>
+    </div>
+
+    <div class="two-col">
+        <div class="card">
+            <h3>&#128193; Client (Frontend)</h3>
+            <div class="code-block">
+<span class="comment">client/</span>
+├── src/
+│   ├── components/
+│   │   ├── context/
+│   │   │   └── <span class="function">ContextProvider.js</span>
+│   │   ├── <span class="function">Home.js</span>       <span class="comment"># Dashboard</span>
+│   │   ├── <span class="function">Register.js</span>   <span class="comment"># Add User</span>
+│   │   ├── <span class="function">Edit.js</span>       <span class="comment"># Edit User</span>
+│   │   ├── <span class="function">Details.js</span>    <span class="comment"># View User</span>
+│   │   ├── <span class="function">Graph.js</span>      <span class="comment"># Analytics</span>
+│   │   ├── <span class="function">Login.js</span>      <span class="comment"># Login Page</span>
+│   │   ├── <span class="function">Signup.js</span>     <span class="comment"># Registration</span>
+│   │   └── <span class="function">Navbaar.js</span>    <span class="comment"># Navigation</span>
+│   ├── <span class="function">App.js</span>            <span class="comment"># Routes</span>
+│   └── <span class="function">App.css</span>           <span class="comment"># Styles</span>
+└── <span class="variable">package.json</span></div>
+        </div>
+        <div class="card">
+            <h3>&#128421; Server (Backend)</h3>
+            <div class="code-block">
+<span class="comment">server/</span>
+├── <span class="function">app.js</span>            <span class="comment"># Express Server</span>
+├── db/
+│   └── <span class="function">conn.js</span>       <span class="comment"># DB Connection</span>
+├── models/
+│   ├── <span class="function">User.js</span>       <span class="comment"># User Model</span>
+│   └── <span class="function">Signup.js</span>     <span class="comment"># Auth Model</span>
+├── Routes/
+│   └── <span class="function">router.js</span>     <span class="comment"># API Routes</span>
+├── <span class="variable">.env</span>              <span class="comment"># Environment</span>
+└── <span class="variable">package.json</span></div>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 3 ==================== -->
+    <div id="s3" class="section-header">
+        <h2>Database Schema</h2>
+        <div class="section-num">3</div>
+    </div>
+
+    <div class="card">
+        <h3>&#128451; Table: <code>users</code> (CRUD Operations)</h3>
+        <table>
+            <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+            <tr><td>id</td><td>INTEGER</td><td>PK, Auto Increment</td><td>Unique identifier</td></tr>
+            <tr><td>name</td><td>STRING</td><td>NOT NULL</td><td>User's full name</td></tr>
+            <tr><td>email</td><td>STRING</td><td>NOT NULL</td><td>User's email address</td></tr>
+            <tr><td>age</td><td>INTEGER</td><td>NOT NULL</td><td>User's age</td></tr>
+            <tr><td>gender</td><td>STRING</td><td>NOT NULL</td><td>Male / Female</td></tr>
+            <tr><td>mobile</td><td>STRING</td><td>NOT NULL</td><td>10-digit mobile number</td></tr>
+            <tr><td>state</td><td>STRING</td><td>NOT NULL</td><td>Indian state name</td></tr>
+            <tr><td>district</td><td>STRING</td><td>NOT NULL</td><td>District of the state</td></tr>
+            <tr><td>add</td><td>STRING</td><td>NOT NULL</td><td>Full address</td></tr>
+            <tr><td>date</td><td>STRING</td><td>NOT NULL</td><td>Registration date</td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>&#128272; Table: <code>signup</code> (Authentication)</h3>
+        <table>
+            <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+            <tr><td>id</td><td>INTEGER</td><td>PK, Auto Increment</td><td>Unique identifier</td></tr>
+            <tr><td>name</td><td>STRING</td><td>NOT NULL</td><td>User's name</td></tr>
+            <tr><td>email</td><td>STRING</td><td>NOT NULL, UNIQUE</td><td>Login email (unique)</td></tr>
+            <tr><td>mobile</td><td>STRING</td><td>NOT NULL</td><td>Mobile number</td></tr>
+            <tr><td>password</td><td>STRING</td><td>NOT NULL</td><td>Bcrypt hashed password</td></tr>
+        </table>
+    </div>
+
+    <!-- ==================== SECTION 4 ==================== -->
+    <div id="s4" class="section-header page-break">
+        <h2>Complete Application Flow</h2>
+        <div class="section-num">4</div>
+    </div>
+
+    <div class="highlight-box">
+        <h4>&#128260; How Frontend Connects to Backend</h4>
+        <p>The React app (port 3000) uses a <strong>proxy setting</strong> in <code>package.json</code> that forwards all API requests to the Express server (port 8001). This means <code>fetch('/getusers')</code> in React automatically goes to <code>http://localhost:8001/getusers</code>.</p>
+    </div>
+
+    <!-- FLOW 1: User Registration (Signup) -->
+    <div class="card" style="border-left-color: #10b981;">
+        <h3 style="color: #059669;">&#9989; Flow 1: User Signup (Authentication)</h3>
+    </div>
+
+    <div class="flow-container">
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">1</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>User opens <code>/signup</code> page</h4>
+                <p>React Router renders <code>Signup.js</code> component. User fills in Name, Email, Mobile, Password fields.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">2</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Client-side Validation</h4>
+                <p>Email regex check, 10-digit mobile validation, password must be 5+ chars with 1 uppercase & 1 digit.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">3</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>POST request to <code>/signupadd</code></h4>
+                <p><code>fetch('/signupadd', { method: 'POST', body: JSON.stringify(data) })</code> sends data to Express server.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">4</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Server validates & checks duplicate email</h4>
+                <p>Express route checks all fields are present, then queries MySQL to check if email already exists.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">5</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Password hashing with Bcrypt</h4>
+                <p>Sequelize <code>beforeCreate</code> hook automatically hashes the password using <code>bcrypt.hashSync(password, 10)</code> before saving.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">6</div></div>
+            <div class="flow-content">
+                <h4>Data saved to <code>signup</code> table → Success response</h4>
+                <p>Sequelize creates record in MySQL. Server returns 201 status. User sees success modal & is redirected to <code>/login</code>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 2: User Login -->
+    <div class="card" style="border-left-color: #f59e0b;">
+        <h3 style="color: #d97706;">&#128274; Flow 2: User Login</h3>
+    </div>
+
+    <div class="flow-container">
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">1</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>User opens <code>/login</code> page</h4>
+                <p>React Router renders <code>Login.js</code> component. User enters Email & Password.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">2</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>POST request to <code>/loginpg</code></h4>
+                <p>Sends <code>{ email, password }</code> as JSON to the Express backend.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">3</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Server finds user by email in <code>signup</code> table</h4>
+                <p><code>Signup.findOne({ where: { email } })</code> queries MySQL through Sequelize ORM.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">4</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Password comparison with Bcrypt</h4>
+                <p><code>bcrypt.compare(inputPassword, hashedPassword)</code> verifies the password. Returns "Success" or "Failed".</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">5</div></div>
+            <div class="flow-content">
+                <h4>Client stores auth state → Redirect to Dashboard</h4>
+                <p><code>localStorage.setItem('loggedIn', true)</code> and <code>localStorage.setItem('email', email)</code>. User is redirected to <code>/home</code>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 3: CREATE -->
+    <div class="card page-break" style="border-left-color: #3b82f6;">
+        <h3 style="color: #2563eb;">&#10133; Flow 3: Create a New User (C in CRUD)</h3>
+    </div>
+
+    <div class="flow-container">
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">1</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>User clicks "Add User" on Dashboard → navigates to <code>/register</code></h4>
+                <p><code>Register.js</code> renders a form with fields: Name, Email, Age, Gender, Mobile, State, District, Address, Date.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">2</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>User fills form → Client-side validation runs</h4>
+                <p>Validates required fields, email format, mobile length. State dropdown dynamically loads district options.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">3</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>POST request to <code>/create</code></h4>
+                <p><code>fetch('/create', { method: 'POST', body: JSON.stringify(userData) })</code></p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">4</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Express route validates → checks duplicate email → Sequelize creates record</h4>
+                <p><code>User.create({ name, email, age, gender, mobile, state, district, add, date })</code> inserts into MySQL <code>users</code> table.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">5</div></div>
+            <div class="flow-content">
+                <h4>Response 201 → Context API updates → Redirect to Dashboard</h4>
+                <p><code>setUdata(response)</code> updates the global context. <code>Home.js</code> detects the change and shows a success alert.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 4: READ -->
+    <div class="card" style="border-left-color: #06b6d4;">
+        <h3 style="color: #0891b2;">&#128065; Flow 4: Read / View Users (R in CRUD)</h3>
+    </div>
+
+    <div class="flow-container">
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">1</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Dashboard (<code>/home</code>) mounts → <code>useEffect</code> triggers</h4>
+                <p><code>Home.js</code> component calls <code>fetch('/getusers')</code> on mount using <code>useEffect</code>.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">2</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>GET <code>/getusers</code> → Sequelize fetches all records</h4>
+                <p><code>User.findAll()</code> queries all rows from the <code>users</code> table. Returns JSON array.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">3</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Data rendered in table with filters, search, pagination</h4>
+                <p>User can filter by gender, date range, sort by age, search by name, and paginate (5/10/15/20/25 per page).</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">4</div></div>
+            <div class="flow-content">
+                <h4>View details: Click "View" → <code>/view/:id</code></h4>
+                <p><code>Details.js</code> calls <code>GET /induser/:id</code> → shows full user profile card with all fields.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 5: UPDATE -->
+    <div class="card" style="border-left-color: #f59e0b;">
+        <h3 style="color: #d97706;">&#9999;&#65039; Flow 5: Update a User (U in CRUD)</h3>
+    </div>
+
+    <div class="flow-container">
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">1</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>User clicks "Edit" on a record → navigates to <code>/edit/:id</code></h4>
+                <p><code>Edit.js</code> fetches existing data via <code>GET /induser/:id</code> and pre-fills the form.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">2</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>User modifies fields → submits form</h4>
+                <p><code>PATCH /updateuser/:id</code> sends updated data as JSON to Express server.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">3</div></div>
+            <div class="flow-content">
+                <h4>Sequelize updates record → Context updates → Redirect</h4>
+                <p><code>User.update(data, { where: { id } })</code> modifies the row. <code>setUpdata(response)</code> triggers dashboard alert.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 6: DELETE -->
+    <div class="card" style="border-left-color: #ef4444;">
+        <h3 style="color: #dc2626;">&#128465; Flow 6: Delete a User (D in CRUD)</h3>
+    </div>
+
+    <div class="flow-container">
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">1</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>User clicks "Delete" on a record in the Dashboard</h4>
+                <p>Triggers <code>fetch('/deleteuser/:id', { method: 'DELETE' })</code> with the user's ID.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">2</div><div class="flow-connector"></div></div>
+            <div class="flow-content">
+                <h4>Express route → Sequelize deletes record</h4>
+                <p><code>User.destroy({ where: { id } })</code> removes the row from the <code>users</code> table.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot">3</div></div>
+            <div class="flow-content">
+                <h4>Context updates → Dashboard re-renders → Alert shown</h4>
+                <p><code>setDltdata(response)</code> updates global state. The user list refreshes and a delete confirmation alert appears.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 5 ==================== -->
+    <div id="s5" class="section-header page-break">
+        <h2>API Endpoints Reference</h2>
+        <div class="section-num">5</div>
+    </div>
+
+    <div class="card">
+        <h3>&#128279; Complete REST API Table</h3>
+        <table>
+            <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Request Body</th><th>Response</th></tr>
+            <tr>
+                <td><span class="badge badge-green">POST</span></td>
+                <td>/create</td><td>Create new user</td>
+                <td>name, email, age, gender, mobile, state, district, add, date</td>
+                <td>201: Created user object</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-blue">GET</span></td>
+                <td>/getusers</td><td>Get all users</td>
+                <td>None</td>
+                <td>200: Array of users</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-blue">GET</span></td>
+                <td>/induser/:id</td><td>Get single user</td>
+                <td>None</td>
+                <td>200: User object</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-orange">PATCH</span></td>
+                <td>/updateuser/:id</td><td>Update user</td>
+                <td>Fields to update</td>
+                <td>201: Updated user</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-red">DELETE</span></td>
+                <td>/deleteuser/:id</td><td>Delete user</td>
+                <td>None</td>
+                <td>200: Deleted count</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-blue">GET</span></td>
+                <td>/searchusers/:query</td><td>Search by name</td>
+                <td>None</td>
+                <td>200: Matching users</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-blue">GET</span></td>
+                <td>/export-csv</td><td>Export CSV file</td>
+                <td>None</td>
+                <td>CSV file download</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-green">POST</span></td>
+                <td>/signupadd</td><td>Register account</td>
+                <td>name, email, mobile, password</td>
+                <td>201: Created account</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-green">POST</span></td>
+                <td>/loginpg</td><td>User login</td>
+                <td>email, password</td>
+                <td>200: "Success" / "Failed"</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ==================== SECTION 6 ==================== -->
+    <div id="s6" class="section-header">
+        <h2>Authentication Flow</h2>
+        <div class="section-num">6</div>
+    </div>
+
+    <div class="arch-diagram">
+┌──────────────────────────────────────────────────────────────────────┐
+│                     AUTHENTICATION FLOW                              │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  SIGNUP:                                                             │
+│  User Form ──► Validation ──► POST /signupadd ──► Check Duplicate   │
+│                                                        │             │
+│                                                   ┌────▼────┐        │
+│                                                   │ Bcrypt  │        │
+│                                                   │ Hash    │        │
+│                                                   │ (10     │        │
+│                                                   │ rounds) │        │
+│                                                   └────┬────┘        │
+│                                                        │             │
+│                                              Save to signup table    │
+│                                                        │             │
+│                                               Redirect to /login     │
+│                                                                      │
+│  LOGIN:                                                              │
+│  Email + Password ──► POST /loginpg ──► Find by Email               │
+│                                              │                       │
+│                                     ┌────────▼────────┐              │
+│                                     │ bcrypt.compare() │              │
+│                                     │ Input vs Hashed  │              │
+│                                     └────────┬────────┘              │
+│                                              │                       │
+│                                    ┌─────────┴──────────┐            │
+│                                    │                    │            │
+│                               "Success"             "Failed"         │
+│                                    │                    │            │
+│                           localStorage:          Show Error          │
+│                           loggedIn = true                            │
+│                           email = user@email                         │
+│                                    │                                 │
+│                             Redirect to /home                        │
+│                                                                      │
+│  ROUTE PROTECTION:                                                   │
+│  App.js checks localStorage('loggedIn')                              │
+│  ├── true  → Render protected routes (Home, Register, Edit, etc.)   │
+│  └── false → Redirect to /login                                     │
+│                                                                      │
+│  LOGOUT:                                                             │
+│  Clear localStorage → Redirect to /login                            │
+└──────────────────────────────────────────────────────────────────────┘</div>
+
+    <!-- ==================== SECTION 7 ==================== -->
+    <div id="s7" class="section-header page-break">
+        <h2>Key Code Walkthrough</h2>
+        <div class="section-num">7</div>
+    </div>
+
+    <div class="card">
+        <h3>&#128268; Database Connection (server/db/conn.js)</h3>
+        <div class="code-block">
+<span class="keyword">const</span> { Sequelize } = <span class="function">require</span>(<span class="string">'sequelize'</span>);
+<span class="keyword">require</span>(<span class="string">'dotenv'</span>).<span class="function">config</span>();
+
+<span class="keyword">const</span> <span class="variable">sequelize</span> = <span class="keyword">new</span> <span class="function">Sequelize</span>(
+    process.env.<span class="variable">DB_NAME</span>,     <span class="comment">// 'test1'</span>
+    process.env.<span class="variable">DB_USER</span>,     <span class="comment">// 'root'</span>
+    process.env.<span class="variable">DB_PASSWORD</span>, <span class="comment">// password</span>
+    {
+        <span class="variable">host</span>: process.env.<span class="variable">DB_HOST</span>,
+        <span class="variable">dialect</span>: <span class="string">'mysql'</span>,
+        <span class="variable">logging</span>: <span class="keyword">false</span>
+    }
+);
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>&#128736; Sequelize Model with Bcrypt Hook (server/models/Signup.js)</h3>
+        <div class="code-block">
+<span class="keyword">const</span> <span class="variable">Signup</span> = sequelize.<span class="function">define</span>(<span class="string">'signup'</span>, {
+    <span class="variable">name</span>:     { type: DataTypes.<span class="variable">STRING</span>, allowNull: <span class="keyword">false</span> },
+    <span class="variable">email</span>:    { type: DataTypes.<span class="variable">STRING</span>, allowNull: <span class="keyword">false</span>, unique: <span class="keyword">true</span> },
+    <span class="variable">mobile</span>:   { type: DataTypes.<span class="variable">STRING</span>, allowNull: <span class="keyword">false</span> },
+    <span class="variable">password</span>: { type: DataTypes.<span class="variable">STRING</span>, allowNull: <span class="keyword">false</span> }
+});
+
+<span class="comment">// Automatically hash password before saving</span>
+Signup.<span class="function">beforeCreate</span>((<span class="variable">user</span>) => {
+    user.password = bcrypt.<span class="function">hashSync</span>(user.password, <span class="keyword">10</span>);
+});
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>&#128640; Express Route Example (server/Routes/router.js)</h3>
+        <div class="code-block">
+<span class="comment">// CREATE - Add new user</span>
+router.<span class="function">post</span>(<span class="string">'/create'</span>, <span class="keyword">async</span> (<span class="variable">req</span>, <span class="variable">res</span>) => {
+    <span class="keyword">const</span> { name, email, age, gender, mobile,
+            state, district, add, date } = req.body;
+
+    <span class="comment">// Validate all fields exist</span>
+    <span class="keyword">if</span> (!name || !email || !age ...) {
+        <span class="keyword">return</span> res.<span class="function">status</span>(<span class="keyword">422</span>).<span class="function">json</span>(<span class="string">"Please fill all fields"</span>);
+    }
+
+    <span class="comment">// Check duplicate email</span>
+    <span class="keyword">const</span> <span class="variable">preuser</span> = <span class="keyword">await</span> User.<span class="function">findOne</span>({ where: { email }});
+    <span class="keyword">if</span> (preuser) {
+        <span class="keyword">return</span> res.<span class="function">status</span>(<span class="keyword">422</span>).<span class="function">json</span>(<span class="string">"Email already exists"</span>);
+    }
+
+    <span class="comment">// Create record in MySQL via Sequelize</span>
+    <span class="keyword">const</span> <span class="variable">user</span> = <span class="keyword">await</span> User.<span class="function">create</span>({
+        name, email, age, gender, mobile,
+        state, district, add, date
+    });
+    res.<span class="function">status</span>(<span class="keyword">201</span>).<span class="function">json</span>(user);
+});
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>&#9881; React Context API (client/src/components/context/ContextProvider.js)</h3>
+        <div class="code-block">
+<span class="comment">// Three separate contexts for CRUD operations</span>
+<span class="keyword">export const</span> <span class="variable">adddata</span>    = <span class="function">createContext</span>();  <span class="comment">// After CREATE</span>
+<span class="keyword">export const</span> <span class="variable">updatedata</span> = <span class="function">createContext</span>();  <span class="comment">// After UPDATE</span>
+<span class="keyword">export const</span> <span class="variable">deldata</span>    = <span class="function">createContext</span>();  <span class="comment">// After DELETE</span>
+
+<span class="comment">// Wraps App → provides state to all components</span>
+&lt;<span class="variable">adddata</span>.Provider value={{ udata, setUdata }}&gt;
+  &lt;<span class="variable">updatedata</span>.Provider value={{ updata, setUpdata }}&gt;
+    &lt;<span class="variable">deldata</span>.Provider value={{ dltdata, setDltdata }}&gt;
+      {children}  <span class="comment">// All app components</span>
+    &lt;/<span class="variable">deldata</span>.Provider&gt;
+  &lt;/<span class="variable">updatedata</span>.Provider&gt;
+&lt;/<span class="variable">adddata</span>.Provider&gt;
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 8: BASIC QUESTIONS ==================== -->
+    <div id="s8" class="section-header page-break">
+        <h2>Interview Questions - Basic Level</h2>
+        <div class="section-num">8</div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">1</div>
+            <div class="q-text">What is CRUD and how is it implemented in this project?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> CRUD stands for <strong>Create, Read, Update, Delete</strong> — the four basic operations for persistent storage.
+            <br><br>
+            <strong>In this project:</strong><br>
+            • <strong>Create:</strong> <code>POST /create</code> → <code>User.create()</code> adds a new record to the MySQL <code>users</code> table<br>
+            • <strong>Read:</strong> <code>GET /getusers</code> → <code>User.findAll()</code> fetches all records; <code>GET /induser/:id</code> fetches one<br>
+            • <strong>Update:</strong> <code>PATCH /updateuser/:id</code> → <code>User.update()</code> modifies an existing record<br>
+            • <strong>Delete:</strong> <code>DELETE /deleteuser/:id</code> → <code>User.destroy()</code> removes a record
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">2</div>
+            <div class="q-text">What is React and why is it used in this project?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> React is a JavaScript library for building user interfaces using a <strong>component-based architecture</strong>. It uses a <strong>Virtual DOM</strong> to efficiently update only the parts of the page that change.
+            <br><br>
+            <strong>In this project:</strong> React is used to build the entire frontend — Login, Signup, Dashboard, Forms, Charts. Each page is a React component (e.g., <code>Home.js</code>, <code>Register.js</code>, <code>Edit.js</code>) that manages its own state and renders UI based on data from the backend API.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">3</div>
+            <div class="q-text">What is Express.js and what role does it play here?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Express.js is a minimal, fast web framework for Node.js that simplifies building web servers and APIs.
+            <br><br>
+            <strong>In this project:</strong> Express handles all HTTP requests from the React frontend. It defines routes like <code>/create</code>, <code>/getusers</code>, <code>/updateuser/:id</code>, etc. It acts as the <strong>middleware layer</strong> between the React frontend and the MySQL database, processing requests, validating data, and returning JSON responses.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">4</div>
+            <div class="q-text">What is Sequelize and why is it used instead of raw SQL?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Sequelize is an <strong>ORM (Object-Relational Mapping)</strong> for Node.js that lets you interact with databases using JavaScript objects instead of writing raw SQL queries.
+            <br><br>
+            <strong>Benefits in this project:</strong><br>
+            • Write <code>User.findAll()</code> instead of <code>SELECT * FROM users</code><br>
+            • Automatic table creation with <code>sequelize.sync()</code><br>
+            • Built-in data validation (<code>allowNull: false</code>)<br>
+            • Protection against SQL injection<br>
+            • Model hooks (e.g., <code>beforeCreate</code> for password hashing)
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">5</div>
+            <div class="q-text">What is the purpose of the <code>.env</code> file in this project?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> The <code>.env</code> file stores <strong>environment variables</strong> — sensitive configuration data that should not be hardcoded in source code. The <code>dotenv</code> package loads these variables into <code>process.env</code>.
+            <br><br>
+            <strong>In this project, it stores:</strong><br>
+            • <code>DB_NAME</code> — Database name (test1)<br>
+            • <code>DB_USER</code> — MySQL username<br>
+            • <code>DB_PASSWORD</code> — MySQL password<br>
+            • <code>DB_HOST</code> — Database host<br>
+            • <code>PORT</code> — Server port (8001)<br><br>
+            This keeps credentials secure and makes the app configurable across environments.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">6</div>
+            <div class="q-text">How does the React frontend communicate with the Express backend?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> The React app uses <code>fetch()</code> API and <code>axios</code> library to make HTTP requests. A <strong>proxy</strong> is configured in the client's <code>package.json</code>: <code>"proxy": "http://localhost:8001"</code>.
+            <br><br>
+            This means when React calls <code>fetch('/getusers')</code>, the development server automatically forwards the request to <code>http://localhost:8001/getusers</code> on the Express server. Data is exchanged in <strong>JSON format</strong>.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">7</div>
+            <div class="q-text">What are React Hooks? Which ones are used in this project?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> React Hooks are functions that let you use state and other React features in functional components (without writing class components).
+            <br><br>
+            <strong>Hooks used in this project:</strong><br>
+            • <code>useState</code> — Manages local state (form inputs, user data, filters)<br>
+            • <code>useEffect</code> — Side effects like fetching data on component mount<br>
+            • <code>useContext</code> — Accesses global state from Context API (adddata, updatedata, deldata)<br>
+            • <code>useNavigate</code> — Programmatic navigation after form submission<br>
+            • <code>useParams</code> — Extracts URL parameters (e.g., user ID for edit/view)
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">8</div>
+            <div class="q-text">What is the Context API and how is it used in this project?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> The Context API is React's built-in state management solution for sharing data across components without prop drilling.
+            <br><br>
+            <strong>In this project,</strong> three contexts are created in <code>ContextProvider.js</code>:<br>
+            • <code>adddata</code> — Shares newly created user data<br>
+            • <code>updatedata</code> — Shares updated user data<br>
+            • <code>deldata</code> — Shares deleted user data<br><br>
+            When <code>Register.js</code> creates a user, it sets <code>udata</code> via context. <code>Home.js</code> consumes this context to show a success alert, without needing to pass props through intermediate components.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">9</div>
+            <div class="q-text">What is React Router and how is routing implemented?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> React Router is a library for handling navigation in single-page applications (SPAs) without full page reloads.
+            <br><br>
+            <strong>Routes in this project:</strong><br>
+            • <code>/login</code> → Login.js<br>
+            • <code>/signup</code> → Signup.js<br>
+            • <code>/home</code> → Home.js (Dashboard) — Protected<br>
+            • <code>/register</code> → Register.js — Protected<br>
+            • <code>/edit/:id</code> → Edit.js — Protected<br>
+            • <code>/view/:id</code> → Details.js — Protected<br>
+            • <code>/graph</code> → Graph.js — Protected<br><br>
+            Protected routes check <code>localStorage('loggedIn')</code> and redirect unauthorized users to <code>/login</code>.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">10</div>
+            <div class="q-text">What is CORS and why is it needed in this project?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> CORS (Cross-Origin Resource Sharing) is a security mechanism that controls which domains can access your API. Browsers block requests from a different origin by default.
+            <br><br>
+            <strong>In this project:</strong> React runs on port 3000 and Express on port 8001 — these are <strong>different origins</strong>. Without CORS middleware (<code>app.use(cors())</code>), the browser would block API requests from the frontend. The <code>cors</code> npm package enables cross-origin requests.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">11</div>
+            <div class="q-text">What HTTP methods are used in this project and for what purpose?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            • <strong>GET</strong> — Retrieve data (fetch users, view single user, export CSV)<br>
+            • <strong>POST</strong> — Create new data (add user, signup, login)<br>
+            • <strong>PATCH</strong> — Partially update existing data (update user details)<br>
+            • <strong>DELETE</strong> — Remove data (delete a user record)<br><br>
+            These follow RESTful conventions where each method has a specific semantic meaning.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">12</div>
+            <div class="q-text">What is <code>useEffect</code> and how is it used for data fetching?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> <code>useEffect</code> is a React Hook that runs side effects (data fetching, subscriptions, DOM updates) after a component renders.
+            <br><br>
+            <strong>In Home.js:</strong><br>
+            <code>useEffect(() => { fetch('/getusers').then(res => res.json()).then(data => setUsers(data)) }, [])</code><br><br>
+            The empty dependency array <code>[]</code> means it runs only once — when the component first mounts. This fetches all users from the backend and stores them in state.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">13</div>
+            <div class="q-text">What is <code>localStorage</code> and how is it used for authentication?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> <code>localStorage</code> is a Web Storage API that stores key-value pairs in the browser with no expiration time (persists after browser is closed).
+            <br><br>
+            <strong>In this project:</strong><br>
+            • On login: <code>localStorage.setItem('loggedIn', true)</code> and <code>localStorage.setItem('email', email)</code><br>
+            • Route protection: <code>App.js</code> checks <code>localStorage.getItem('loggedIn')</code><br>
+            • Navbar: Displays logged-in user's email from localStorage<br>
+            • Logout: <code>localStorage.removeItem()</code> clears auth state
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">14</div>
+            <div class="q-text">What is the purpose of <code>package.json</code> in this project?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> <code>package.json</code> is the manifest file for Node.js projects. It contains:<br>
+            • Project metadata (name, version)<br>
+            • <strong>Dependencies</strong> — libraries the project needs (React, Express, Sequelize, etc.)<br>
+            • <strong>Scripts</strong> — commands like <code>npm start</code>, <code>npm run dev</code><br>
+            • <strong>Proxy</strong> — In the client's package.json, <code>"proxy": "http://localhost:8001"</code> forwards API calls<br><br>
+            This project has <strong>two</strong> package.json files — one for client (React) and one for server (Express).
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">15</div>
+            <div class="q-text">What is the difference between SQL and NoSQL? Why was MySQL chosen?</div>
+            <span class="q-difficulty q-easy">Easy</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            • <strong>SQL (MySQL):</strong> Relational, structured tables with schemas, uses SQL queries, ACID compliant, best for structured data with relationships<br>
+            • <strong>NoSQL (MongoDB):</strong> Document-based, flexible schema, JSON-like documents, best for unstructured/rapidly changing data<br><br>
+            <strong>MySQL was chosen here because:</strong> User data has a <strong>fixed structure</strong> (name, email, age, etc.) — every record has the same fields. This maps perfectly to relational tables. Sequelize ORM provides an easy abstraction layer over MySQL.
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 9: INTERMEDIATE QUESTIONS ==================== -->
+    <div id="s9" class="section-header page-break">
+        <h2>Interview Questions - Intermediate Level</h2>
+        <div class="section-num">9</div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">16</div>
+            <div class="q-text">Explain the complete flow when a user clicks "Add User" and submits the form.</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Step-by-step flow:<br><br>
+            <strong>1. Frontend:</strong> User clicks "Add User" → React Router navigates to <code>/register</code> → <code>Register.js</code> renders the form<br>
+            <strong>2. Form State:</strong> Each input is controlled by <code>useState</code> hook → <code>onChange</code> updates state<br>
+            <strong>3. Validation:</strong> On submit, client-side validation checks all fields are filled, email format, mobile length<br>
+            <strong>4. API Call:</strong> <code>fetch('/create', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) })</code><br>
+            <strong>5. Proxy:</strong> React dev server proxy forwards request to <code>http://localhost:8001/create</code><br>
+            <strong>6. Express Route:</strong> <code>router.post('/create')</code> receives the request, validates fields server-side<br>
+            <strong>7. Duplicate Check:</strong> <code>User.findOne({ where: { email } })</code> checks if email already exists<br>
+            <strong>8. Database Insert:</strong> <code>User.create(data)</code> → Sequelize generates <code>INSERT INTO users</code> SQL query<br>
+            <strong>9. Response:</strong> Server returns 201 status with the created user object<br>
+            <strong>10. Context Update:</strong> <code>setUdata(response)</code> updates global context<br>
+            <strong>11. Navigation:</strong> <code>navigate('/home')</code> redirects to dashboard<br>
+            <strong>12. Alert:</strong> <code>Home.js</code> detects context change via <code>useContext(adddata)</code> and shows success alert
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">17</div>
+            <div class="q-text">How does password hashing work in this project? Why is it important?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> This project uses <strong>bcryptjs</strong> for password hashing.<br><br>
+            <strong>How it works:</strong><br>
+            • During <strong>signup</strong>: A Sequelize <code>beforeCreate</code> hook intercepts the user object before saving. It runs <code>bcrypt.hashSync(user.password, 10)</code> which generates a salt (10 rounds) and creates a one-way hash. The hashed password (e.g., <code>$2a$10$xyz...</code>) is stored in MySQL — never the plain text.<br>
+            • During <strong>login</strong>: <code>bcrypt.compare(inputPassword, storedHash)</code> hashes the input with the same salt and compares results. Returns true/false.<br><br>
+            <strong>Why important:</strong> If the database is breached, attackers cannot reverse the hashes to get actual passwords. Bcrypt's salt prevents rainbow table attacks, and the cost factor (10 rounds) makes brute force computationally expensive.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">18</div>
+            <div class="q-text">What is the difference between <code>PUT</code> and <code>PATCH</code>? Why does this project use <code>PATCH</code>?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            • <strong>PUT:</strong> Replaces the <em>entire</em> resource. You must send all fields — any missing fields are set to null/default.<br>
+            • <strong>PATCH:</strong> Partially updates a resource. You only send the fields that changed.<br><br>
+            <strong>This project uses PATCH</strong> because when editing a user, we send all fields from the form, but semantically we're updating specific fields of an existing record, not replacing the entire resource. PATCH is the more precise HTTP method for this operation.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">19</div>
+            <div class="q-text">Explain the Sequelize model definition and what <code>timestamps: false</code> does.</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Sequelize models define the structure of database tables using JavaScript objects:<br><br>
+            <code>sequelize.define('users', { name: { type: DataTypes.STRING, allowNull: false }, ... }, { timestamps: false })</code><br><br>
+            • <strong>First argument:</strong> Table name in MySQL<br>
+            • <strong>Second argument:</strong> Column definitions with types and constraints<br>
+            • <strong>Third argument:</strong> Options<br><br>
+            <strong><code>timestamps: false</code></strong> tells Sequelize NOT to automatically add <code>createdAt</code> and <code>updatedAt</code> columns. By default, Sequelize adds these columns to track when records are created/modified. Since this project stores dates manually in a <code>date</code> field, the auto timestamps are disabled.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">20</div>
+            <div class="q-text">How does CSV export work in this project?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> The <code>GET /export-csv</code> endpoint:<br><br>
+            <strong>1.</strong> Fetches all users from MySQL using <code>User.findAll()</code><br>
+            <strong>2.</strong> Defines CSV headers: <code>id, name, date, email, age, gender, mobile, state, district, add</code><br>
+            <strong>3.</strong> Maps each user record to a comma-separated row<br>
+            <strong>4.</strong> Joins headers and rows with newline characters<br>
+            <strong>5.</strong> Sets response headers:<br>
+            &nbsp;&nbsp;• <code>Content-Type: text/csv</code><br>
+            &nbsp;&nbsp;• <code>Content-Disposition: attachment; filename=users.csv</code><br>
+            <strong>6.</strong> Sends the CSV string as the response body<br><br>
+            The <code>Content-Disposition: attachment</code> header tells the browser to download the file instead of displaying it.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">21</div>
+            <div class="q-text">How is pagination implemented in the Home.js dashboard?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Pagination is implemented on the <strong>client side</strong>:<br><br>
+            <strong>1.</strong> All users are fetched at once from <code>/getusers</code><br>
+            <strong>2.</strong> State variables: <code>page</code> (current page), <code>perPage</code> (records per page: 5/10/15/20/25)<br>
+            <strong>3.</strong> Data is sliced: <code>users.slice((page - 1) * perPage, page * perPage)</code><br>
+            <strong>4.</strong> Total pages calculated: <code>Math.ceil(totalUsers / perPage)</code><br>
+            <strong>5.</strong> Pagination buttons rendered dynamically based on total pages<br>
+            <strong>6.</strong> Clicking a page number updates the <code>page</code> state → triggers re-render with new slice<br><br>
+            <strong>Note:</strong> The backend also has a <code>/lmuser</code> endpoint for server-side pagination using <code>offset</code> and <code>limit</code>, but the frontend currently uses client-side pagination.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">22</div>
+            <div class="q-text">What is the Virtual DOM and how does it benefit this application?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> The Virtual DOM is a lightweight JavaScript representation of the actual DOM. React creates a virtual copy of the UI in memory.<br><br>
+            <strong>How it works:</strong><br>
+            1. When state changes (e.g., deleting a user), React creates a new Virtual DOM tree<br>
+            2. It <strong>diffs</strong> the new tree with the previous one (Reconciliation)<br>
+            3. Only the actual changes are applied to the real DOM (minimum DOM operations)<br><br>
+            <strong>In this project:</strong> When you delete a user from the table, React doesn't re-render the entire table — it only removes that specific row from the DOM. When filtering users by gender, only the visible rows update. This makes the UI <strong>fast and responsive</strong> even with many records.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">23</div>
+            <div class="q-text">How does the search functionality work in the Dashboard?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Search is implemented as <strong>real-time client-side filtering</strong>:<br><br>
+            <strong>1.</strong> A search input field updates <code>searchQuery</code> state on every keystroke (<code>onChange</code>)<br>
+            <strong>2.</strong> The users array is filtered: <code>users.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))</code><br>
+            <strong>3.</strong> The filtered results are displayed in the table immediately<br>
+            <strong>4.</strong> Pagination resets to page 1 on new search<br><br>
+            The backend also has a <code>/searchusers/:query</code> endpoint that uses SQL <code>LIKE</code> operator: <code>WHERE name LIKE '%query%'</code> for server-side search, but the frontend currently uses client-side filtering for instant results.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">24</div>
+            <div class="q-text">What middleware is used in the Express server and what does each do?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Middleware functions execute during the request-response cycle:<br><br>
+            • <code>express.json()</code> — Parses incoming JSON request bodies. Without this, <code>req.body</code> would be undefined for POST/PATCH requests<br>
+            • <code>cors()</code> — Enables Cross-Origin Resource Sharing, allowing the React app (port 3000) to make requests to Express (port 8001)<br>
+            • <code>express.urlencoded({ extended: true })</code> — Parses URL-encoded form data<br>
+            • <code>router</code> — Custom route middleware that handles all API endpoints defined in <code>Routes/router.js</code><br><br>
+            They are applied using <code>app.use()</code> and execute in the order they are defined.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">25</div>
+            <div class="q-text">How does the Graph/Analytics page work?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> The <code>Graph.js</code> component creates a bar chart using <strong>Chart.js</strong>:<br><br>
+            <strong>1.</strong> On mount, fetches all users via <code>axios.get('/getusers')</code><br>
+            <strong>2.</strong> Generates labels for the last 7 days (e.g., "Mon", "Tue", etc.)<br>
+            <strong>3.</strong> Filters users by their registration date to count how many registered each day<br>
+            <strong>4.</strong> Calculates the percentage of total users added per day<br>
+            <strong>5.</strong> Renders a <code>&lt;canvas&gt;</code> element and creates a <code>new Chart()</code> instance<br>
+            <strong>6.</strong> Configures bar chart with gradient colors, labels, and responsive options<br><br>
+            This provides a visual overview of user registration trends over the past week.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">26</div>
+            <div class="q-text">What is the purpose of <code>sequelize.sync()</code> in the server setup?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> <code>sequelize.sync()</code> synchronizes all defined models with the database. It checks if the tables exist in MySQL and creates them if they don't.<br><br>
+            <strong>Options:</strong><br>
+            • <code>sync()</code> — Creates table if it doesn't exist (used in this project)<br>
+            • <code>sync({ force: true })</code> — Drops and recreates tables (destructive, for development)<br>
+            • <code>sync({ alter: true })</code> — Modifies existing tables to match model (adds/removes columns)<br><br>
+            In <code>app.js</code>, <code>sequelize.sync()</code> is called before <code>app.listen()</code> to ensure all tables exist before the server starts accepting requests.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">27</div>
+            <div class="q-text">How does the Edit flow pre-populate form data?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>1.</strong> User clicks "Edit" on a record → navigates to <code>/edit/:id</code><br>
+            <strong>2.</strong> <code>Edit.js</code> extracts the ID using <code>useParams()</code> hook<br>
+            <strong>3.</strong> <code>useEffect</code> fires on mount → calls <code>GET /induser/:id</code><br>
+            <strong>4.</strong> Express route queries: <code>User.findAll({ where: { id } })</code><br>
+            <strong>5.</strong> Returns the user object as JSON<br>
+            <strong>6.</strong> Component sets form state: <code>setName(data.name)</code>, <code>setEmail(data.email)</code>, etc.<br>
+            <strong>7.</strong> Since inputs are controlled (<code>value={name}</code>), the form automatically shows existing data<br>
+            <strong>8.</strong> User modifies fields and submits → <code>PATCH /updateuser/:id</code> sends updated data
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">28</div>
+            <div class="q-text">What are controlled components in React? Give examples from this project.</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> A controlled component is a form element whose value is controlled by React state. The input's value is always driven by state, and changes are handled via <code>onChange</code>.<br><br>
+            <strong>Example from Register.js:</strong><br>
+            <code>&lt;input value={name} onChange={(e) => setName(e.target.value)} /&gt;</code><br><br>
+            • <code>value={name}</code> — Input displays whatever is in the <code>name</code> state<br>
+            • <code>onChange</code> — Every keystroke updates the state<br>
+            • React state is the "single source of truth"<br><br>
+            All form inputs in Login.js, Signup.js, Register.js, and Edit.js are controlled components. This enables real-time validation, conditional rendering, and easy form submission.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">29</div>
+            <div class="q-text">How does the State/District dropdown work in the Register form?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> The form uses a <strong>cascading/dependent dropdown</strong> pattern:<br><br>
+            <strong>1.</strong> A large JavaScript object maps 32 Indian states to their arrays of districts<br>
+            <strong>2.</strong> The State dropdown is populated with all state names from the object's keys<br>
+            <strong>3.</strong> When a state is selected (<code>onChange</code>), it updates <code>setState(selectedState)</code><br>
+            <strong>4.</strong> The District dropdown dynamically renders options from <code>statesData[selectedState]</code><br>
+            <strong>5.</strong> If the state changes, the district resets<br><br>
+            This is entirely client-side — no API call needed — since the state/district mapping is hardcoded in the component. This provides instant dropdown updates without network latency.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">30</div>
+            <div class="q-text">What HTTP status codes are used in this project and what do they mean?</div>
+            <span class="q-difficulty q-medium">Medium</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            • <strong>200 (OK):</strong> Successful GET, DELETE requests — user data fetched/deleted successfully<br>
+            • <strong>201 (Created):</strong> Successful POST/PATCH — new user created or existing user updated<br>
+            • <strong>404 (Not Found):</strong> <code>/induser/:id</code> when user ID doesn't exist in database<br>
+            • <strong>422 (Unprocessable Entity):</strong> Validation failures — missing fields, duplicate email<br>
+            • <strong>500 (Internal Server Error):</strong> Unexpected server errors (database connection failures, etc.)<br><br>
+            Using appropriate status codes helps the frontend handle responses correctly — e.g., showing error messages for 422, success alerts for 201.
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 10: ADVANCED QUESTIONS ==================== -->
+    <div id="s10" class="section-header page-break">
+        <h2>Interview Questions - Advanced Level</h2>
+        <div class="section-num">10</div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">31</div>
+            <div class="q-text">What are the security vulnerabilities in this project and how would you fix them?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Several security concerns exist:<br><br>
+            <strong>1. No JWT/Session tokens:</strong> Authentication relies on <code>localStorage</code> flags. Anyone can set <code>loggedIn=true</code> in the console and access protected routes.<br>
+            <em>Fix: Implement JWT (JSON Web Tokens). Server generates a signed token on login, client sends it in <code>Authorization</code> header, server validates on every request.</em><br><br>
+            <strong>2. No server-side route protection:</strong> API endpoints like <code>/getusers</code>, <code>/create</code> are accessible without authentication.<br>
+            <em>Fix: Add authentication middleware that verifies JWT before processing requests.</em><br><br>
+            <strong>3. No rate limiting:</strong> Login endpoint is vulnerable to brute-force attacks.<br>
+            <em>Fix: Use <code>express-rate-limit</code> package to limit login attempts.</em><br><br>
+            <strong>4. No input sanitization:</strong> User inputs aren't sanitized for XSS attacks.<br>
+            <em>Fix: Use libraries like <code>express-validator</code> or <code>DOMPurify</code> for input sanitization.</em><br><br>
+            <strong>5. .env file should be in .gitignore:</strong> Database credentials should never be committed to version control.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">32</div>
+            <div class="q-text">How would you implement JWT authentication to replace the localStorage approach?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>Backend changes:</strong><br>
+            1. Install <code>jsonwebtoken</code> package<br>
+            2. On successful login, generate token: <code>jwt.sign({ userId, email }, SECRET_KEY, { expiresIn: '24h' })</code><br>
+            3. Send token in response: <code>res.json({ token, message: 'Success' })</code><br>
+            4. Create auth middleware: <code>const decoded = jwt.verify(req.headers.authorization.split(' ')[1], SECRET_KEY)</code><br>
+            5. Apply middleware to protected routes: <code>router.get('/getusers', authMiddleware, handler)</code><br><br>
+            <strong>Frontend changes:</strong><br>
+            1. Store token in localStorage (or httpOnly cookie for better security)<br>
+            2. Add token to all API requests: <code>headers: { 'Authorization': 'Bearer ' + token }</code><br>
+            3. On token expiry (401 response), redirect to login<br>
+            4. Remove <code>loggedIn</code> flag — check for valid token instead
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">33</div>
+            <div class="q-text">Why is client-side pagination used instead of server-side? What are the trade-offs?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>Current approach (Client-side):</strong> Fetches ALL records at once, slices in JavaScript.<br>
+            • <em>Pros:</em> Instant page switching, works offline after initial load, simpler implementation, enables client-side search/filter<br>
+            • <em>Cons:</em> Slow initial load with large datasets, high memory usage, wastes bandwidth<br><br>
+            <strong>Server-side pagination:</strong> Uses SQL <code>LIMIT</code> and <code>OFFSET</code> (available at <code>/lmuser</code> endpoint).<br>
+            • <em>Pros:</em> Fast initial load, works with millions of records, less bandwidth/memory<br>
+            • <em>Cons:</em> Network request for every page change, more complex implementation<br><br>
+            <strong>When to switch:</strong> Client-side is fine for &lt;1000 records. For larger datasets, server-side pagination with <code>LIMIT 10 OFFSET 20</code> is essential. You'd also need server-side search (<code>WHERE name LIKE '%query%'</code>) and sorting (<code>ORDER BY age ASC</code>).
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">34</div>
+            <div class="q-text">How does the Sequelize <code>beforeCreate</code> hook work internally for password hashing?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> Sequelize hooks (also called lifecycle events) are functions that are called before or after certain operations.<br><br>
+            <strong>How <code>beforeCreate</code> works:</strong><br>
+            1. When <code>Signup.create({ name, email, password: 'plaintext' })</code> is called<br>
+            2. Sequelize intercepts BEFORE the SQL INSERT statement<br>
+            3. The <code>beforeCreate</code> hook fires with the model instance as argument<br>
+            4. <code>user.password = bcrypt.hashSync(user.password, 10)</code> replaces plain text with hash<br>
+            5. The cost factor <code>10</code> means 2^10 = 1024 rounds of key expansion<br>
+            6. Bcrypt generates a random 128-bit salt, appends it to the hash<br>
+            7. The resulting hash (60 chars, starting with <code>$2a$10$</code>) is what gets saved<br>
+            8. THEN the INSERT INTO SQL runs with the hashed password<br><br>
+            <strong>Other available hooks:</strong> <code>afterCreate</code>, <code>beforeUpdate</code>, <code>beforeDestroy</code>, <code>beforeBulkCreate</code>, etc.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">35</div>
+            <div class="q-text">How would you deploy this application to production?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>1. Build React app:</strong> <code>npm run build</code> creates optimized static files in <code>client/build/</code><br>
+            <strong>2. Serve static files from Express:</strong> <code>app.use(express.static(path.join(__dirname, '../client/build')))</code><br>
+            <strong>3. Database:</strong> Use a managed MySQL service (AWS RDS, PlanetScale, Railway) instead of localhost<br>
+            <strong>4. Environment:</strong> Set production environment variables (no .env file — use platform secrets)<br>
+            <strong>5. Security:</strong> Add Helmet.js, rate limiting, HTTPS, JWT auth<br>
+            <strong>6. Hosting options:</strong><br>
+            &nbsp;&nbsp;• <strong>Vercel/Netlify:</strong> Frontend (static) + Separate backend on Railway/Render<br>
+            &nbsp;&nbsp;• <strong>AWS EC2/DigitalOcean:</strong> Full server with Nginx reverse proxy + PM2 process manager<br>
+            &nbsp;&nbsp;• <strong>Docker:</strong> Containerize both client and server with docker-compose<br>
+            <strong>7. CI/CD:</strong> GitHub Actions for automated testing and deployment
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">36</div>
+            <div class="q-text">Compare Context API (used here) vs Redux. When would you switch to Redux?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>Context API (used in this project):</strong><br>
+            • Built into React — no extra dependency<br>
+            • Simple setup: <code>createContext()</code> + <code>Provider</code> + <code>useContext()</code><br>
+            • Re-renders ALL consumers when any value changes<br>
+            • No middleware, no devtools, no time-travel debugging<br>
+            • Good for: small/medium apps, simple state (auth status, theme, language)<br><br>
+            <strong>Redux:</strong><br>
+            • Centralized store with predictable state updates<br>
+            • Reducers for complex state logic, middleware for side effects<br>
+            • Redux DevTools for time-travel debugging<br>
+            • Selective re-renders with <code>useSelector</code><br>
+            • Good for: large apps, complex state, many state updates, team projects<br><br>
+            <strong>Switch to Redux when:</strong> State logic becomes complex (many interdependent updates), multiple components need to update the same state, or you need middleware for async operations (Redux Thunk/Saga).
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">37</div>
+            <div class="q-text">How would you optimize this application for performance with 100,000+ users?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>Backend optimizations:</strong><br>
+            • Switch to <strong>server-side pagination</strong> with <code>LIMIT/OFFSET</code><br>
+            • Add <strong>database indexes</strong> on frequently queried columns (email, name, date)<br>
+            • Implement <strong>caching</strong> with Redis for frequently accessed data<br>
+            • Use <strong>connection pooling</strong> (Sequelize supports this by default)<br>
+            • Move search to <strong>MySQL FULLTEXT index</strong> or Elasticsearch<br><br>
+            <strong>Frontend optimizations:</strong><br>
+            • <strong>React.memo()</strong> to prevent unnecessary re-renders of table rows<br>
+            • <strong>useMemo()</strong> for expensive filter/sort computations<br>
+            • <strong>Virtual scrolling</strong> (react-virtualized) to render only visible rows<br>
+            • <strong>Debounce</strong> search input (wait 300ms after typing stops before filtering)<br>
+            • <strong>Lazy loading</strong> with React.lazy() and Suspense for routes<br>
+            • <strong>Code splitting</strong> to reduce initial bundle size
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">38</div>
+            <div class="q-text">What is SQL injection? How does Sequelize protect against it?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong> SQL injection is an attack where malicious SQL is inserted through user input to manipulate database queries.<br><br>
+            <strong>Example attack:</strong> If using raw SQL: <code>SELECT * FROM users WHERE email = '${userInput}'</code><br>
+            Attacker enters: <code>' OR '1'='1</code> → Query becomes: <code>WHERE email = '' OR '1'='1'</code> → Returns ALL records<br><br>
+            <strong>How Sequelize protects:</strong><br>
+            • Uses <strong>parameterized queries</strong> internally — user input is never concatenated into SQL strings<br>
+            • <code>User.findOne({ where: { email: userInput } })</code> generates: <code>SELECT * FROM users WHERE email = ?</code><br>
+            • The <code>?</code> placeholder is replaced by the MySQL driver using <strong>prepared statements</strong><br>
+            • The driver treats the parameter as a literal value, not as SQL code<br>
+            • Even if attacker sends <code>' OR '1'='1</code>, it's treated as a literal string to match<br><br>
+            <strong>Exception:</strong> Using <code>sequelize.query(rawSQL)</code> with string concatenation bypasses this protection — always use Sequelize methods or parameterized raw queries.
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">39</div>
+            <div class="q-text">How does the proxy work in development and what replaces it in production?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>Development (proxy):</strong><br>
+            • <code>"proxy": "http://localhost:8001"</code> in client's <code>package.json</code><br>
+            • Webpack Dev Server (used by Create React App) intercepts API requests<br>
+            • Requests without a matching static file are forwarded to the proxy target<br>
+            • This avoids CORS issues in development — both appear to be on the same origin from the browser's perspective<br><br>
+            <strong>Production (no proxy):</strong><br>
+            • React app is built to static files (<code>npm run build</code> → <code>build/</code> folder)<br>
+            • Express serves these static files: <code>app.use(express.static('build'))</code><br>
+            • Both frontend and backend run on the SAME server/port — no CORS needed<br>
+            • Alternative: Use <strong>Nginx</strong> as a reverse proxy to route <code>/api/*</code> to Express and <code>/*</code> to static files<br>
+            • Alternative: Deploy separately and configure CORS with specific allowed origins
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header">
+            <div class="q-num">40</div>
+            <div class="q-text">If you had to redesign this project from scratch, what architectural changes would you make?</div>
+            <span class="q-difficulty q-hard">Hard</span>
+        </div>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            <strong>1. Authentication:</strong> Replace localStorage with JWT + httpOnly cookies + refresh tokens. Add middleware for route protection on both client and server.<br><br>
+            <strong>2. Architecture:</strong> Separate concerns into Controller → Service → Repository layers instead of putting all logic in routes. Add error handling middleware.<br><br>
+            <strong>3. Validation:</strong> Use <code>Joi</code> or <code>express-validator</code> for consistent server-side validation. Add request schemas for each endpoint.<br><br>
+            <strong>4. State Management:</strong> Use React Query (TanStack Query) for server state — automatic caching, background refetching, optimistic updates. Remove Context API for CRUD state.<br><br>
+            <strong>5. Database:</strong> Add proper migrations (Sequelize CLI) instead of <code>sync()</code>. Add indexes. Use Sequelize associations if adding related models.<br><br>
+            <strong>6. API Design:</strong> Version the API (<code>/api/v1/users</code>), add consistent error response format, implement HATEOAS principles.<br><br>
+            <strong>7. Testing:</strong> Add Jest + React Testing Library for frontend. Supertest + Mocha for backend API testing.<br><br>
+            <strong>8. TypeScript:</strong> Convert to TypeScript for type safety across the full stack.
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <div style="margin-top: 60px; text-align: center; padding: 30px; border-top: 2px solid #e5e7eb; color: #94a3b8;">
+        <p style="font-size: 1.1em; font-weight: 600; color: #4338ca;">CRUD MySQL Project — Complete Guide & Interview Questions</p>
+        <p style="margin-top: 8px;">Tech Stack: React.js | Node.js | Express.js | MySQL | Sequelize ORM</p>
+        <p style="margin-top: 8px;">Total Questions: 40 (15 Basic + 15 Intermediate + 10 Advanced)</p>
+        <p style="margin-top: 15px; font-size: 0.85em;">Generated for interview preparation</p>
+    </div>
+
+</div>
+
+</body>
+</html>
