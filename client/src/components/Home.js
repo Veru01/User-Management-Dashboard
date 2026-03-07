@@ -14,6 +14,8 @@ const Home = () => {
     const [openAction, setOpenAction] = useState(null);
     const [alertMsg, setAlertMsg] = useState(null);
     const [activeFilter, setActiveFilter] = useState("all");
+    const [dateFrom, setDateFrom] = useState("");
+    const [dateTo, setDateTo] = useState("");
     const actionRef = useRef(null);
 
     const { udata } = useContext(adddata);
@@ -79,7 +81,8 @@ const Home = () => {
         setCurrentPage(1);
     };
 
-    const todayStr = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
     const handleStatFilter = (filter) => {
         setActiveFilter(filter);
@@ -95,6 +98,15 @@ const Home = () => {
         if (activeFilter === "today") return user.date && user.date.split('T')[0] === todayStr;
         return true;
     };
+    const filterByDateRange = (user) => {
+        if (!dateFrom && !dateTo) return true;
+        const userDate = user.date ? user.date.split('T')[0] : '';
+        if (!userDate) return false;
+        if (dateFrom && userDate < dateFrom) return false;
+        if (dateTo && userDate > dateTo) return false;
+        return true;
+    };
+    const clearDateRange = () => { setDateFrom(""); setDateTo(""); setCurrentPage(1); };
     const sortByAge = (a, b) => {
         if (sortOption === "asc") return a.age - b.age;
         if (sortOption === "desc") return b.age - a.age;
@@ -118,7 +130,7 @@ const Home = () => {
             .catch(() => setAlertMsg({ type: 'danger', text: 'Export failed' }));
     };
 
-    const processed = filteredUsers.filter(filterByGender).filter(filterByStatCard).sort(sortByAge);
+    const processed = filteredUsers.filter(filterByGender).filter(filterByStatCard).filter(filterByDateRange).sort(sortByAge);
     const totalPages = Math.ceil(processed.length / recordPerPage);
     const startIdx = (currentPage - 1) * recordPerPage;
     const pageData = processed.slice(startIdx, startIdx + recordPerPage);
@@ -196,6 +208,21 @@ const Home = () => {
                             <option value="desc">Descending</option>
                         </select>
                     </div>
+                    <div className="toolbar-group">
+                        <label>From</label>
+                        <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setCurrentPage(1); }} style={{ cursor: 'pointer' }} />
+                    </div>
+                    <div className="toolbar-group">
+                        <label>To</label>
+                        <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setCurrentPage(1); }} style={{ cursor: 'pointer' }} />
+                    </div>
+                    {(dateFrom || dateTo) && (
+                        <div className="toolbar-group" style={{ alignSelf: 'flex-end' }}>
+                            <button className="btn-pro btn-outline-pro" onClick={clearDateRange} style={{ fontSize: 12, padding: '6px 12px' }}>
+                                &#10005; Clear Dates
+                            </button>
+                        </div>
+                    )}
                     <div className="toolbar-group">
                         <label>Per Page</label>
                         <select value={recordPerPage} onChange={e => { setRecordPerPage(parseInt(e.target.value)); setCurrentPage(1); }}>

@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import axios from 'axios';
 import Navbar from './Navbaar';
 
 const Graph = () => {
-    const [chart, setChart] = useState(null);
     const chartRef = useRef();
+    const chartInstanceRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,22 +21,27 @@ const Graph = () => {
         fetchData();
 
         return () => {
-            if (chart) chart.destroy();
+            if (chartInstanceRef.current) chartInstanceRef.current.destroy();
         };
     }, []);
+
+    const formatLocalDate = (d) => {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
 
     const processData = (userData) => {
         const lastSevenDays = [];
         for (let i = 6; i >= 0; i--) {
             const date = new Date();
             date.setDate(date.getDate() - i);
-            lastSevenDays.push(date.toISOString().split('T')[0]);
+            lastSevenDays.push(formatLocalDate(date));
         }
 
         const userCountByDate = {};
         lastSevenDays.forEach(date => { userCountByDate[date] = 0; });
 
         userData.forEach(user => {
+            if (!user.date) return;
             const date = user.date.split('T')[0];
             if (userCountByDate[date] !== undefined) userCountByDate[date]++;
         });
@@ -86,7 +91,7 @@ const Graph = () => {
                 },
             },
         });
-        setChart(newChart);
+        chartInstanceRef.current = newChart;
     };
 
     return (
